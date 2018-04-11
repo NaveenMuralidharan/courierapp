@@ -1,0 +1,34 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>routes</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+ <!--Routes VIEW-->
+  <ion-card>
+      <ion-card-header>Routes</ion-card-header>
+            
+        <ion-list>
+          <ion-item *ngFor="let route of routesArray; let routeIndex = index">
+              
+              <h3>{{route?.name}}</h3>
+              
+              <p *ngIf="route.orders.length > 0">{{route?.orders.length}}</p> 
+                  
+              <button ion-button color="dark" (click)="viewRouteOrders(route.name, route.dateCreated)">
+                      View 
+              </button>
+                  
+          </ion-item> 
+        </ion-list>  
+ <!--loop route in routes array-->
+                   
+    </ion-card>
+
+</ion-content>

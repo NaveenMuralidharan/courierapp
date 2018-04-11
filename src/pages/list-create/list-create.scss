@@ -1,0 +1,21 @@
+page-list-create {
+    
+    ion-scroll {
+        height: 300px;
+        
+        width: 100%;
+        }    
+
+    deleted {
+        text-decoration: line-through;
+    }
+    editing {
+        background-color: 'blue';
+    }
+
+     #map {
+            width: 200px;
+            height: 200px;
+        }    
+
+}

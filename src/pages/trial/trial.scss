@@ -1,0 +1,21 @@
+page-trial {
+
+    #map {
+            width: 800px;
+            height: 600px;
+        }
+        
+    ion-scroll {
+        height: 300px;
+        
+        width: 90%;
+        }   
+        
+    .selected {
+        background-color: red;
+    }
+    
+    .assigned {
+        background-color: #eea29a;
+    }  
+}

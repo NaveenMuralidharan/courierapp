@@ -1,0 +1,108 @@
+<!--
+  Generated template for the ListCreatePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{list.listName}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  
+<!--ADDRESS SEARCHBAR-->
+
+<ion-card *ngIf="!formReady">
+
+<ion-card-header>
+  Search address
+</ion-card-header>
+  
+  <ion-searchbar [(ngModel)]="query" (ionInput) = searchPlace(query)></ion-searchbar>
+  
+    <ion-card>
+      
+     <ion-list>
+            <ion-item *ngFor = "let place of places" (click)="choosePlace(place)">
+              {{place?.description}}
+            </ion-item>
+      </ion-list>
+      
+    </ion-card> 
+    
+</ion-card>
+
+<!--ORDER CREAtE FORM-->
+
+<ion-card *ngIf = "formReady">
+  
+  <ion-card-header>
+    Order Label {{labelNo}}
+  </ion-card-header>
+  
+  <ion-item>
+    {{chosenPlace.address}}
+     
+  </ion-item>  
+  
+  
+  <ion-item>
+    
+      <ion-label stacked>OSNR</ion-label>
+      <ion-checkbox [(ngModel)]="orderOsnr"></ion-checkbox>
+    
+  </ion-item>
+  <ion-item>
+  
+      <ion-label stacked>Business</ion-label>
+      <ion-checkbox [(ngModel)]="orderBusiness"></ion-checkbox>
+    
+  </ion-item>
+  
+  <!--<button ion-button -->
+  <!--      (click)="saveOrder(list, chosenPlace, labelNo,  -->
+  <!--                  orderOsnr, orderBusiness)"> -->
+<button ion-button 
+        (click)="compileOrder()"> 
+    Submit 
+  </button>
+
+  <button ion-button color="danger" outline (click)="cancelOrder()">
+    Cancel
+  </button>
+
+  
+</ion-card>
+      
+
+  <ion-card>
+            <div #map id="map"></div>
+  </ion-card>
+
+  <ion-card>
+      <ion-list>
+  <ion-scroll scrollY="true">
+    <ion-item *ngIf="ordersList.length > 0">{{ordersList.length}} - orders</ion-item>
+    
+    <ion-item *ngFor="let order of ordersList; let i = index">
+     
+      <ion-card [class.deleted] = "order.deleted">
+      {{order.label}} - {{order.address}}
+      <span>
+        <button ion-button icon-only [disabled]="order.deleted" color="danger" (click)="deleteOrder(order, i)"> 
+           <ion-icon name="trash"></ion-icon>
+        </button>
+      </span>
+    </ion-card>  
+   
+    </ion-item>
+  </ion-scroll>
+  </ion-list>
+  </ion-card>
+
+</ion-content>

@@ -1,0 +1,407 @@
+<!--
+  Generated template for the TrialPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>trial</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-grid>
+  
+<!--StARt ROW 1 - control panel-->
+<ion-row>
+     
+  <!--StARt COLUMN 1 of control panel - choose date and postal-->
+  <ion-col col-2>
+        <ion-item> 
+         <p>Choose date</p>
+         <span>
+         <button ion-button color="dark" icon-only (click)="chooseDate()">
+           <ion-icon name="arrow-dropdown-circle"></ion-icon>
+         </button>
+         </span>
+        </ion-item> 
+        <!--Date DISPLAy-->  
+        <ion-card *ngIf="!dateChosen">
+          <ion-list>
+              <ion-item *ngFor="let date of datesArray" (click)="getNewOrders(date)">
+                {{date}}
+              </ion-item>
+            </ion-list>
+        </ion-card>    
+        
+        <!--Sort-failed orders-->   
+        <ion-card *ngIf = "sortFailedOrders.length > 0">
+          <button ion-button color="primary" (click)= "retrySort()">
+            Retry
+          </button>
+          
+          <ion-list>
+              <ion-item *ngFor="let order of sortFailedOrders">
+                {{order.address}}
+              </ion-item>
+            </ion-list>
+        </ion-card>   
+           
+        <!--POStALS DISPLAy-->
+        <ion-card>
+          
+          <ion-list inset *ngIf="postalsArray.length > 0">
+            
+            <ion-list-header>
+              Postals
+            </ion-list-header>
+            
+            <ion-item *ngFor="let postal of postalsArray; let i = index">
+              {{postal.code}} - 
+              <p>
+                Unassigned - {{postal.unassigned}}
+              </p>
+              <span>
+                <button ion-button [disabled]="postalSelected" icon-only (click)="viewPostal(postal, i)">
+                  <ion-icon name="arrow-dropright-circle"></ion-icon>
+                </button>
+              </span>
+            </ion-item>
+            
+          </ion-list>
+          
+        </ion-card>
+      
+      </ion-col>
+  <!--END COLUMN 1 ROW 1of control panel - choose date and postal-->     
+
+  <!--StARt COLUMN 2 ROW 1-->
+  <ion-col col-3>
+    
+     <!--POStAL VIEW and zones-->
+      
+        <ion-card>
+    
+        <ion-list no-lines>
+              
+            <!--loop postals in postal orders array-->
+              <ion-item *ngFor="let postal of postalOrdersArray; let postalIndex = index">
+                
+                <!--Close postal view-->
+                <button ion-button color="danger" icon-only outline (click)="closePostal()">
+                    <ion-icon name="close-circle"></ion-icon>
+                </button>
+               
+                <!--SHow Postal code details-->
+                  <h3>{{postal.code}}</h3>
+                 
+                 <button ion-button [disabled] ="showBreakdown" (click) = "showDetails(postal.orders)"> Show Details </button>
+                  
+                <button ion-button color="danger" icon-only outline (click)="hideDetails()">
+                  Hide details  
+                </button>
+                 
+                 
+                 <ion-card *ngIf="showBreakdown">
+                   <ion-item>
+                     OSNR
+                      <br>
+                       <button ion-button color="dark" [disabled] ="filterOn" (click)="filterMarkers(details.osnr.total.indices)">
+                          Total - {{details?.osnr.total.count}}
+                       </button>
+                      
+                      <br>
+                       <button ion-button color="primary" [disabled] ="filterOn" (click)="filterMarkers(details.osnr.envelopes.indices)">
+                          envelope - {{details?.osnr.envelopes.count}}
+                       </button>
+                     
+                       <button ion-button color="primary" [disabled] ="filterOn" (click)="filterMarkers(details.osnr.screens.indices)">
+                         screen   - {{details?.osnr.screens.count}}
+                       </button>
+                    
+                       <button ion-button color="primary" [disabled] ="filterOn" (click)="filterMarkers(details.osnr.heavies.indices)">
+                         heavy   - {{details?.osnr.heavies.count}}
+                       </button>
+
+                   </ion-item>
+
+                  <ion-item>
+                     Business
+                    
+                    <br>  
+                       <button ion-button color="dark" [disabled] ="filterOn" (click)="filterMarkers(details.business.total.indices)">
+                          Total - {{details?.business.total.count}}
+                       </button>
+                     
+                     <br> 
+                       <button ion-button color="primary" [disabled] ="filterOn" (click)="filterMarkers(details.business.envelopes.indices)">
+                          envelope - {{details?.business.envelopes.count}}
+                       </button>
+                     
+                       <button ion-button color="primary" [disabled] ="filterOn" (click)="filterMarkers(details.business.screens.indices)">
+                         screen   - {{details?.business.screens.count}}
+                       </button>
+                    
+                       <button ion-button color="primary" [disabled] ="filterOn" (click)="filterMarkers(details.business.heavies.indices)">
+                         heavy   - {{details?.business.heavies.count}}
+                       </button>
+
+                   </ion-item>
+
+                 </ion-card>
+              
+              <!---ZONE OPTIONS IF postal UNDER view--->
+              <ion-card *ngIf="postalSelected">   
+              
+              <ion-item>
+                <button ion-button [disabled]="markingZone || zoneUnderView" color="dark" outline (click)="markZone()">
+                      Create zone
+                </button>
+              </ion-item>
+                
+              <!--<ion-item *ngIf="!zoneUnderView">-->
+    
+                <ion-item>
+                  
+                  <button *ngIf="markingZone && !zoneUnderView" ion-button color="dark" outline (click)="showZoneDetails()">
+                              Show zone details 
+                    </button>
+                  
+                  <button *ngIf="markingZone && !zoneUnderView" ion-button color="danger" outline (click)="eraseZone()">
+                              Cancel
+                  </button> 
+                  
+                  
+                </ion-item>
+                     
+                    
+              <!--</ion-item>-->
+                
+                 <ion-card *ngIf="zoneUnderView">
+                   
+                   <ion-item>
+                     OSNR
+                     <br>
+                     Total     - {{zoneDetails?.osnr.total.count}}
+                     <br>
+                     envelopes - {{zoneDetails?.osnr.envelopes.count}}
+                     <br>
+                     screens   - {{zoneDetails?.osnr.screens.count}}
+                     <br>
+
+                     heavies   - {{zoneDetails?.osnr.heavies.count}}
+
+                   </ion-item>
+
+                  <ion-item>
+                     Business
+                     <br>
+                     Total     - {{zoneDetails?.business.total.count}}
+                     <br>
+                     envelopes - {{zoneDetails?.business.envelopes.count}}
+                     <br>
+                     screens   - {{zoneDetails?.business.screens.count}}
+                     <br>
+
+                     heavies   - {{zoneDetails?.business.heavies.count}}
+
+                   </ion-item>
+
+                 </ion-card>
+                        
+                        
+                        <button *ngIf="zoneUnderView" ion-button color="danger" (click)="eraseZone()">
+                          Cancel 
+                        </button>
+                        
+                  <!--</ion-item>-->
+              </ion-card>   
+                    
+                  
+              </ion-item>
+              <!--end of postal loop-->
+        </ion-list>
+        
+        </ion-card>
+        
+        <ion-card>
+          <ion-list>
+            <ion-scroll scrollY="true" overflow-scroll="false">
+              <ion-item *ngFor="let postal of postalOrdersArray">
+                <ion-item *ngFor="let order of postal.orders">
+                  <ion-item *ngIf="order.assigned == false">
+                    {{order.address}}
+                  </ion-item>  
+                </ion-item>
+              </ion-item>
+            </ion-scroll>
+          </ion-list>
+        </ion-card>  
+      <!--END POStAL VIEW-->
+    
+     
+
+  </ion-col>
+  <!--END COLUMN 2 ROW 1-->
+
+  <!--StARt COLUMN 3 ROW 1-->    
+  <ion-col col-5>
+
+    <!--MAP-->
+      <ion-card>
+            <div #map id="map"></div>
+    </ion-card>
+  
+  </ion-col>
+  <!--END COLUMN 3 ROW 1-->  
+
+  <ion-col col-2>
+    
+    <!--Routes VIEW-->
+    <ion-card>
+      <ion-card-header>Routes</ion-card-header>
+            
+            <button ion-button small round outline color="secondary" (click)="createRoute()">
+                      Create Route
+            </button> 
+
+     <!--All routes in /routes-->
+    <ion-list>
+
+    <ion-item *ngFor="let route of routesArray; let routeIndex = index">
+              {{route?.name}}
+              
+        <p *ngIf="route.orders.length > 0">{{route?.orders.length}}</p> 
+        
+        <!--open route button-->    
+        <span *ngIf="!route.selected">
+               <button ion-button round small color="dark" icon-only (click)="showRoute(route.name)">
+                 <ion-icon name="arrow-dropdown-circle"></ion-icon>
+               </button>
+            </span>
+        
+        <!--close route button-->
+        <span *ngIf="route.selected">
+               <button ion-button round outline small color="danger" icon-only (click)="closeRoute(route.name)">
+                 <ion-icon name="close-circle"></ion-icon>
+               </button>
+            </span>
+           
+     
+       <!--ALL route options and orders and stop lists-->
+    <ion-card *ngIf="route.selected">
+          
+        <!--add orders to route button-->
+        <ion-item>
+                  <button ion-button color="primary" 
+                     [disabled] = "!postalSelected" (click)="addToRoute(route.name, routeIndex)">
+                      Add
+                  </button> 
+        </ion-item>
+        
+         <!--remove orders from route button-->
+        <ion-item>
+                  <button ion-button color="danger" 
+                      (click)="removeOrders(route.name, routeIndex)">
+                      Remove 
+                  </button> 
+        </ion-item>
+        
+        
+        <!--add custom stops button-->
+        <ion-item>
+            
+            <button ion-button [disabled]="addingStop" color="light" block small (click)="allowSearch()">
+                Add custom stops
+            </button>
+            
+        </ion-item> 
+          
+        <!--search address card-->
+         <ion-card *ngIf="addingStop">
+              
+              <span>
+                  <button ion-button round outline small color="danger" icon-only (click)="closeSearch(route.name)">
+                       <ion-icon name="close-circle"></ion-icon>
+                  </button>
+              </span>
+  
+        <ion-card-header>
+  Search address
+</ion-card-header>
+  
+        <ion-searchbar [(ngModel)]="query" (ionInput) = searchPlace(query)></ion-searchbar>
+  
+    <ion-card *ngIf = "places.length > 0">
+      
+     <ion-list>
+            <ion-item *ngFor = "let place of places" (click)="choosePlace(place, route.name)">
+              {{place?.description}}
+            </ion-item>
+      </ion-list>
+      
+    </ion-card> 
+    
+</ion-card>
+
+            
+        <ion-item *ngFor="let stop of route.stops; let stopIndex = index">
+             
+             <ion-item *ngIf="!stop.deleted">
+                 {{stop?.message}} - {{stop?.address}} 
+                
+                 <ion-item>
+                    <button ion-button color="danger" icon-only (click)="deleteStop(stop)">
+                       <ion-icon name="trash"></ion-icon>
+                    </button>
+                </ion-item>
+              
+             </ion-item>         
+             
+              
+              
+            </ion-item>
+            
+            <!--list of orders in route-->
+            <ion-list *ngIf="route.selected">
+                    <ion-scroll scrollY="true">
+                      <ion-item *ngFor="let order of route.orders; let orderIndex = index" (click)="selectRouteOrder(routeIndex, orderIndex)">
+                        
+                        <ion-item *ngIf="!order.deleted">
+                                {{order.address}}   
+                                
+                                <ion-item *ngIf="order.selected">
+                                    <button ion-button color="dark" icon-only small outline (click)="addStop(order.address, route.name)">
+                                        <ion-icon name="add-circle">Breakpoint</ion-icon>
+                                    </button>
+                                </ion-item>
+                        </ion-item>
+                        
+                      </ion-item>
+                    </ion-scroll>
+                </ion-list>
+                
+    </ion-card>      
+          
+    </ion-item> 
+
+</ion-list>  
+      
+ <!--loop route in routes array-->
+                   
+    </ion-card>
+    
+  </ion-col>
+
+</ion-row>
+<!--END ROW 1-->  
+    
+</ion-grid>
+  
+  
+  
+</ion-content>

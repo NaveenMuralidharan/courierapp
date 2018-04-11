@@ -1,0 +1,39 @@
+<!--
+  Generated template for the RouteordersPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>routeorders</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+ <ion-list>
+   <ion-item *ngFor="let list of ordersArray; let listIndex = index">
+     
+     {{list?.name}}
+     
+      <ion-item *ngFor="let order of list.orders; let orderIndex = index">
+        
+        <ion-item *ngIf = "order.assigned">
+       
+          <ion-checkbox [(ngModel)]="order.loaded" (ionChange)="loadOrder(order, orderIndex, listIndex)"></ion-checkbox>
+       
+        </ion-item>
+
+        {{order?.label}} - {{order?.address}}
+        
+      </ion-item>  
+     
+   </ion-item>
+ </ion-list>
+
+
+</ion-content>
